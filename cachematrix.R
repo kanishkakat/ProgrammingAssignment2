@@ -1,15 +1,51 @@
-## Put comments here that give an overall description of what your
-## functions do
-
-## Write a short comment describing this function
-
+## Use the following command to test
+## cacheSolve(makeCacheMatrix(matrix(c(1:4), nrow =2, ncol =2)))
+## Accepts matrix as input and caches input and output matrix 
+## Returns functions being used to cache the matrix
 makeCacheMatrix <- function(x = matrix()) {
-
+  ## initialize the output matrix variable
+  m<-NULL
+  ## assign value to input matrix variable in global environment
+  set<-function(y){
+    x<<-y
+    m<<-NULL
+  }
+  ## return the input matrix variable
+  get<-function(){
+    return(x)
+  } 
+  ## assign value to output matrix variable in global environment
+  setmatrix<-function(solve) {
+    m<<- solve
+  }
+  ## return output matrix variable
+  getmatrix<-function() {
+    return(m)
+  }
+  ## return the list of functions that can be performed on input variable
+  return(list(set=set, get=get,setmatrix=setmatrix,getmatrix=getmatrix))
 }
 
-
-## Write a short comment describing this function
-
+## accepts list of functions as input and uses them to cache the input & output matrix 
 cacheSolve <- function(x, ...) {
-        ## Return a matrix that is the inverse of 'x'
+  ## initialize the output matrix 
+  m<-x$getmatrix()
+  ## if not initialized means it has some cached data
+  if(!is.null(m)){
+    message("getting cached data")
+    return(m)
+  }
+  ## assign value to input matrix
+  matrix<-x$get()
+  ## Verify the number of rows and determinant to check inversible or not
+  if ((nrow(matrix) != ncol(matrix)) | (det(matrix) == 0))  {
+    message("invalid matrix")
+    return(m)
+  }
+  ## inverse the input matrix using solve function
+  m<-solve(matrix, ...)
+  ## assign value to output matrix
+  x$setmatrix(m)
+  ## return output
+  return(m)
 }
